@@ -20,24 +20,26 @@ func main() {
 	http.HandleFunc("/todoes", func(w http.ResponseWriter, r *http.Request) {
 		// 一旦、送信するためのタスクデータを作成
 		var tasks []Task
-		tasks = append(tasks, Task{TaskName: "タスク1",
+		tasks = append(tasks, Task{
+			TaskName:    "タスク1",
 			Deadline:    time.Now().Add(48 * time.Hour), // 48時間後の日時
 			Content:     "This is a sample task.My name is su",
 			CreatedDate: time.Now(),
 			UpdatedDate: time.Now(),
 		})
+		// headerに送信されるコンテンツのメディアタイプを設定する
+		w.Header().Set("Content-Type", "application/json")
 
 		// データをJSONにエンコードする。
-		jsonData, err := json.Marshal(tasks)
+		json, err := json.Marshal(tasks)
 		if err != nil {
 			// エンコードに失敗した場合、サーバーエラーを返す。
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// エンコードされたJSONデータをクライアントに送信する。
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(jsonData)
+		// エンコードされたJSONデータをレスポンスに書き込む。
+		w.Write(json)
 	})
 
 	// HTTPサーバーを起動
