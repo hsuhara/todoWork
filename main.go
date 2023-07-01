@@ -22,26 +22,22 @@ func main() {
 		var tasks []Task
 		tasks = append(tasks, Task{
 			TaskName:    "タスク1",
-			Deadline:    time.Now().Add(48 * time.Hour), // 48時間後の日時
+			Deadline:    time.Now().Add(48 * time.Hour),
 			Content:     "This is a sample task.My name is su",
 			CreatedDate: time.Now(),
 			UpdatedDate: time.Now(),
 		})
-		// headerに送信されるコンテンツのメディアタイプを設定する
+
 		w.Header().Set("Content-Type", "application/json")
 
-		// データをJSONにエンコードする。
 		json, err := json.Marshal(tasks)
 		if err != nil {
-			// エンコードに失敗した場合、サーバーエラーを返す。
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		// エンコードされたJSONデータをレスポンスに書き込む。
 		w.Write(json)
 	})
 
-	// HTTPサーバーを起動
 	http.ListenAndServe(":8080", nil)
 }
