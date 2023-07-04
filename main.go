@@ -8,7 +8,7 @@ import (
 )
 
 type Task struct {
-	TaskID      string    `json:"task_id"`      // タスクID
+	Id          string    `json:"id"`           // タスクID
 	TaskName    string    `json:"task_name"`    // タスク名称
 	Deadline    time.Time `json:"deadline"`     // 期限
 	Content     string    `json:"content"`      // 内容
@@ -23,7 +23,7 @@ func main() {
 		// 一旦、送信するためのタスクデータを作成
 		var tasks []Task
 		tasks = append(tasks, Task{
-			TaskID:      "1",
+			Id:          "1",
 			TaskName:    "task1",
 			Deadline:    time.Now().Add(48 * time.Hour),
 			Content:     "task coment1",
@@ -31,7 +31,7 @@ func main() {
 			UpdatedDate: time.Now(),
 		},
 			Task{
-				TaskID:      "2",
+				Id:          "2",
 				TaskName:    "task2",
 				Deadline:    time.Now().Add(48 * time.Hour),
 				Content:     "task coment1",
@@ -40,26 +40,26 @@ func main() {
 			},
 		)
 
-		taskId := r.URL.Query().Get("taskId")
-		if taskId == "" {
-			http.Error(w, "Param taskId is missing", http.StatusBadRequest)
+		id := r.URL.Query().Get("id")
+		if id == "" {
+			http.Error(w, "Param id is missing", http.StatusBadRequest)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 
-		var taskFound *Task
+		var foundTask *Task
 		for _, task := range tasks {
-			if task.TaskID == taskId {
-				taskFound = &task
+			if task.Id == id {
+				foundTask = &task
 				break
 			}
 		}
-		if taskFound == nil {
-			http.Error(w, fmt.Sprintf("No task foun with taskId:%s", taskId), http.StatusNotFound)
+		if foundTask == nil {
+			http.Error(w, fmt.Sprintf("No task foun with taskId:%s", id), http.StatusNotFound)
 			return
 		}
 
-		json, err := json.Marshal(taskFound)
+		json, err := json.Marshal(foundTask)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
