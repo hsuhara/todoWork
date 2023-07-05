@@ -9,7 +9,7 @@ import (
 
 type Task struct {
 	Id          string    `json:"id"`           // タスクID
-	TaskName    string    `json:"task_name"`    // タスク名称
+	Name        string    `json:"name"`         // タスク名称
 	Deadline    time.Time `json:"deadline"`     // 期限
 	Content     string    `json:"content"`      // 内容
 	CreatedDate time.Time `json:"created_date"` // 作成日付
@@ -24,7 +24,7 @@ func main() {
 		var tasks []Task
 		tasks = append(tasks, Task{
 			Id:          "1",
-			TaskName:    "task1",
+			Name:        "task1",
 			Deadline:    time.Now().Add(48 * time.Hour),
 			Content:     "task coment1",
 			CreatedDate: time.Now(),
@@ -32,7 +32,7 @@ func main() {
 		},
 			Task{
 				Id:          "2",
-				TaskName:    "task2",
+				Name:        "task2",
 				Deadline:    time.Now().Add(48 * time.Hour),
 				Content:     "task coment1",
 				CreatedDate: time.Now(),
