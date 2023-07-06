@@ -40,32 +40,51 @@ func main() {
 			},
 		)
 
-		id := r.URL.Query().Get("id")
-		if id == "" {
-			http.Error(w, "Param id is missing", http.StatusBadRequest)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
+		if r.URL.Path == "/todoes" {
+			w.Header().Set("Content-Type", "application/json")
 
-		var foundTask *Task
-		for _, task := range tasks {
-			if task.Id == id {
-				foundTask = &task
-				break
+			if r.URL.RawQuery == "" {
+				// タスク一覧取得
+				json, err := json.Marshal(tasks)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				w.Write(json)
+
+			} else {
+				//単一タスク取得
+				id := r.URL.Query().Get("id")
+
+				if id == "" {
+					http.Error(w, "Param id is missing", http.StatusBadRequest)
+					return
+				}
+
+				var foundTask *Task
+				for _, task := range tasks {
+					if task.Id == id {
+						foundTask = &task
+						break
+					}
+				}
+				if foundTask == nil {
+					http.Error(w, fmt.Sprintf("No task foun with taskId:%s", id), http.StatusNotFound)
+					return
+				}
+
+				json, err := json.Marshal(foundTask)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				w.Write(json)
 			}
-		}
-		if foundTask == nil {
-			http.Error(w, fmt.Sprintf("No task foun with taskId:%s", id), http.StatusNotFound)
-			return
+
+		} else {
+			http.Error(w, "Not Found", http.StatusNotFound)
 		}
 
-		json, err := json.Marshal(foundTask)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Write(json)
 	})
 
 	http.ListenAndServe(":8080", nil)
