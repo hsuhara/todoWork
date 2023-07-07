@@ -19,7 +19,7 @@ type Task struct {
 func main() {
 	// "/todoes"パスへのリクエストを処理するハンドラ関数を設定。
 	// 下記のパスにアクセスすると定義したハンドラ関数が実行される。
-	http.HandleFunc("/todoes", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/todos", func(w http.ResponseWriter, r *http.Request) {
 		// 一旦、送信するためのタスクデータを作成
 		var tasks []Task
 		tasks = append(tasks, Task{
@@ -40,7 +40,7 @@ func main() {
 			},
 		)
 
-		if r.URL.Path == "/todoes" {
+		if r.URL.Path == "/todos" {
 			w.Header().Set("Content-Type", "application/json")
 
 			if r.URL.RawQuery == "" {
@@ -57,7 +57,7 @@ func main() {
 				id := r.URL.Query().Get("id")
 
 				if id == "" {
-					http.Error(w, "Param id is missing", http.StatusBadRequest)
+					http.Error(w, "task id is missing", http.StatusBadRequest)
 					return
 				}
 
@@ -69,7 +69,7 @@ func main() {
 					}
 				}
 				if foundTask == nil {
-					http.Error(w, fmt.Sprintf("No task foun with taskId:%s", id), http.StatusNotFound)
+					http.Error(w, fmt.Sprintf("not found task with taskId:%s", id), http.StatusNotFound)
 					return
 				}
 
